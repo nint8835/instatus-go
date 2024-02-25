@@ -11,11 +11,12 @@ type Translations struct {
 }
 
 type Component struct {
-	Id                           string       `json:"id"`
-	Name                         string       `json:"name"`
-	NameTranslationId            *string      `json:"nameTranslationId"`
-	Description                  *string      `json:"description"`
-	DescriptionTranslationId     *string      `json:"descriptionTranslationId"`
+	Id                       string  `json:"id"`
+	Name                     string  `json:"name"`
+	NameTranslationId        *string `json:"nameTranslationId"`
+	Description              *string `json:"description"`
+	DescriptionTranslationId *string `json:"descriptionTranslationId"`
+	// TODO: Enum
 	Status                       string       `json:"status"`
 	InternalStatus               string       `json:"internalStatus"`
 	Order                        int          `json:"order"`
@@ -70,6 +71,28 @@ func (c *Client) GetComponent(params GetComponentRequest) (Component, error) {
 
 	var component Component
 	err := c.get(targetUrl, &component)
+
+	return component, err
+}
+
+type UpdateComponentFields struct {
+	Status *string `json:"status,omitempty"`
+
+	// TODO: More comprehensive set of fields
+}
+
+type UpdateComponentRequest struct {
+	PageId      string
+	ComponentId string
+
+	UpdatedFields UpdateComponentFields
+}
+
+func (c *Client) UpdateComponent(params UpdateComponentRequest) (Component, error) {
+	targetUrl, _ := url.Parse(BaseUrl + "/v1/" + params.PageId + "/components/" + params.ComponentId)
+
+	var component Component
+	err := c.put(targetUrl, params.UpdatedFields, &component)
 
 	return component, err
 }

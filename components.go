@@ -59,3 +59,17 @@ func (c *Client) GetComponents(params GetComponentsRequest) ([]Component, error)
 
 	return components, err
 }
+
+type GetComponentRequest struct {
+	PageId      string
+	ComponentId string
+}
+
+func (c *Client) GetComponent(params GetComponentRequest) (Component, error) {
+	targetUrl, _ := url.Parse(BaseUrl + "/v1/" + params.PageId + "/components/" + params.ComponentId)
+
+	var component Component
+	err := c.get(targetUrl, &component)
+
+	return component, err
+}

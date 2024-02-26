@@ -1,6 +1,7 @@
 package instatus_go
 
 import (
+	"net/http"
 	"net/url"
 	"time"
 )
@@ -92,7 +93,30 @@ func (c *Client) UpdateComponent(params UpdateComponentRequest) (Component, erro
 	targetUrl, _ := url.Parse(BaseUrl + "/v1/" + params.PageId + "/components/" + params.ComponentId)
 
 	var component Component
-	err := c.put(targetUrl, params.UpdatedFields, &component)
+	err := c.reqWithBody(http.MethodPut, targetUrl, params.UpdatedFields, &component)
+
+	return component, err
+}
+
+type CreateComponentFields struct {
+	Name       string     `json:"name"`
+	ShowUptime *bool      `json:"showUptime,omitempty"`
+	StartDate  *time.Time `json:"startDate,omitempty"`
+
+	// TODO: More comprehensive set of fields
+}
+
+type CreateComponentRequest struct {
+	PageId string
+
+	Fields CreateComponentFields
+}
+
+func (c *Client) CreateComponent(params CreateComponentRequest) (Component, error) {
+	targetUrl, _ := url.Parse(BaseUrl + "/v1/" + params.PageId + "/components")
+
+	var component Component
+	err := c.reqWithBody(http.MethodPost, targetUrl, params.Fields, &component)
 
 	return component, err
 }

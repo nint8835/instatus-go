@@ -46,13 +46,13 @@ func (c *Client) get(url *url.URL, target any) error {
 	return nil
 }
 
-func (c *Client) put(url *url.URL, body any, target any) error {
+func (c *Client) reqWithBody(method string, url *url.URL, body any, target any) error {
 	bodyBytes, err := json.Marshal(body)
 	if err != nil {
 		return fmt.Errorf("error marshalling body: %w", err)
 	}
 
-	req, err := http.NewRequest(http.MethodPut, url.String(), bytes.NewReader(bodyBytes))
+	req, err := http.NewRequest(method, url.String(), bytes.NewReader(bodyBytes))
 	if err != nil {
 		return fmt.Errorf("error creating request: %w", err)
 	}
